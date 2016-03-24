@@ -1,0 +1,11 @@
+New-AzureBGPPeering -ServiceKey $ServiceKey -PrimaryPeerSubnet $private_Subnet_Primary -SecondaryPeerSubnet $private_Subnet_Secondary  -PeerAsn $ASN  -VlanId $VLANPrivate  –AccessType Private
+ 
+# Subnets used for configuring private peering
+$private_Subnet_Primary = "IP/CIDR"
+$private_Subnet_Secondary = "IP/CIDR"
+ 
+# Autonomous System Number
+$ASN = "xxxxx"
+ 
+# VLAN ID for private peering
+$VLANPrivate = "xxx"
