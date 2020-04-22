@@ -1,0 +1,26 @@
+ 
+#create public IP
+
+#create public IP
+$publicIP = New-AzureRmPublicIpAddress -Name "publicip" -ResourceGroupName "ProductionUtility" -Location "West US" -AllocationMethod Dynamic
+
+ 
+#get gateway subnet - assuming it is first subnet
+$vnet = Get-AzureRmVirtualNetwork -Name production -ResourceGroupName ProductionUtility
+$subnetconfig = Get-AzureRmVirtualNetworkSubnetConfig -VirtualNetwork $vnet
+$gatewaysubnet = $subnetconfig[3]
+ 
+#create VNET Gateway IP Config
+ 
+$gatewayipconfig = New-AzureRmVirtualNetworkGatewayIpConfig -Name "ExpressRoutegwconfig" -PublicIpAddress $publicIP -Subnet $gatewaysubnet
+ 
+#Create Vnet gateway
+ 
+new-AzureRmVirtualNetworkGateway -Name "vnetgw" -ResourceGroupName "ProductionUtility" -Location "West US" -GatewayType ExpressRoute -IpConfigurations $gatewayipconfig
+
+ 
+#create gateway connection
+$circuit = Get-AzureRmExpressRouteCircuit -Name "ExpressRouteARMCircuit" -ResourceGroupName "ExpressRouteResourceGroup"
+$vnetgateway = Get-AzureRmVirtualNetworkGateway -Name "vnetgw" -ResourceGroupName "ProductionUtility"
+ 
+New-AzureRmVirtualNetworkGatewayConnection -ConnectionType ExpressRoute -Location "West US"  -Name "expressrouteconnection" -ResourceGroupName "ProductionUtility"  -VirtualNetworkGateway1 $vnetgateway  -PeerId $circuit.Id

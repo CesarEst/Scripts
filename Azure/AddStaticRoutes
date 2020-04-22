@@ -1,0 +1,6 @@
+$servers = Get-Content "D:\servers.txt"
+foreach($server in $servers)
+{
+	(.\psexec.exe \\"$server" route add -p 10.255.0.0 mask 255.255.0.0 64.94.141.254)
+	
+}
